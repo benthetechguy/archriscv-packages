@@ -16,7 +16,7 @@ Index: PKGBUILD
  sha256sums=('SKIP'
 -            '7cbba374356a189faac71001c5344ce8f02434684b1ce1accefc0cc4bd6718e5')
 +            '7cbba374356a189faac71001c5344ce8f02434684b1ce1accefc0cc4bd6718e5'
-+            'c25318e080cdb1d229a72823799fe2e764a824447e7e92f4019d21c8423e3843')
++            '14f21db05687e8770754625125f5f5a8e285f75ebe076695e049e88badaba8a6')
  
  export KBUILD_BUILD_HOST=archlinux
  export KBUILD_BUILD_USER=$pkgbase
