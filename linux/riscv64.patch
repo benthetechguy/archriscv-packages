@@ -1,35 +1,35 @@
-diff --git PKGBUILD PKGBUILD
-index 434cdf21..11d16580 100644
---- PKGBUILD
-+++ PKGBUILD
-@@ -18,6 +18,7 @@ _srcname=archlinux-linux
+Index: PKGBUILD
+===================================================================
+--- PKGBUILD	(revision 435570)
++++ PKGBUILD	(working copy)
+@@ -18,6 +18,7 @@
  source=(
    "$_srcname::git+https://github.com/archlinux/linux?signed#tag=$_srctag"
    config         # the main kernel config file
-+  unmatched.config-patch
++  riscv64.config-patch
  )
  validpgpkeys=(
    'ABAF11C65A2970B130ABE3C479BE3E4300411886'  # Linus Torvalds
-@@ -26,7 +27,8 @@ validpgpkeys=(
+@@ -26,7 +27,8 @@
    'C7E7849466FE2358343588377258734B41C31549'  # David Runge <dvzrv@archlinux.org>
  )
  sha256sums=('SKIP'
 -            '7cbba374356a189faac71001c5344ce8f02434684b1ce1accefc0cc4bd6718e5')
 +            '7cbba374356a189faac71001c5344ce8f02434684b1ce1accefc0cc4bd6718e5'
-+            'c0442beb600f70eb827029dbbc1b8b83f5c82224c10870dd913b51dfa17e4ff4')
++            'c25318e080cdb1d229a72823799fe2e764a824447e7e92f4019d21c8423e3843')
  
  export KBUILD_BUILD_HOST=archlinux
  export KBUILD_BUILD_USER=$pkgbase
-@@ -54,6 +56,8 @@ prepare() {
+@@ -54,6 +56,8 @@
    make olddefconfig
    diff -u ../config .config || :
  
-+  patch -Np0 < ../unmatched.config-patch
++  patch -Np0 < ../riscv64.config-patch
 +
    make -s kernelrelease > version
    echo "Prepared $pkgbase version $(<version)"
  }
-@@ -61,7 +65,7 @@ prepare() {
+@@ -61,7 +65,7 @@
  build() {
    cd $_srcname
    make all
@@ -38,7 +38,7 @@ index 434cdf21..11d16580 100644
  }
  
  _package() {
-@@ -87,6 +91,9 @@ _package() {
+@@ -87,6 +91,9 @@
    echo "Installing modules..."
    make INSTALL_MOD_PATH="$pkgdir/usr" INSTALL_MOD_STRIP=1 modules_install
  
@@ -48,7 +48,7 @@ index 434cdf21..11d16580 100644
    # remove build and source links
    rm "$modulesdir"/{source,build}
  }
-@@ -102,19 +109,16 @@ _package-headers() {
+@@ -102,19 +109,16 @@
    install -Dt "$builddir" -m644 .config Makefile Module.symvers System.map \
      localversion.* version vmlinux
    install -Dt "$builddir/kernel" -m644 kernel/Makefile
@@ -58,12 +58,12 @@ index 434cdf21..11d16580 100644
  
 -  # required when STACK_VALIDATION is enabled
 -  install -Dt "$builddir/tools/objtool" tools/objtool/objtool
--
--  # required when DEBUG_INFO_BTF_MODULES is enabled
--  install -Dt "$builddir/tools/bpf/resolve_btfids" tools/bpf/resolve_btfids/resolve_btfids
 +  # add xfs and shmem for aufs building
 +  mkdir -p "$builddir"/{fs/xfs,mm}
  
+-  # required when DEBUG_INFO_BTF_MODULES is enabled
+-  install -Dt "$builddir/tools/bpf/resolve_btfids" tools/bpf/resolve_btfids/resolve_btfids
+-
    echo "Installing headers..."
    cp -t "$builddir" -a include
 -  cp -t "$builddir/arch/x86" -a arch/x86/include
@@ -73,7 +73,7 @@ index 434cdf21..11d16580 100644
  
    install -Dt "$builddir/drivers/md" -m644 drivers/md/*.h
    install -Dt "$builddir/net/mac80211" -m644 net/mac80211/*.h
-@@ -136,7 +140,7 @@ _package-headers() {
+@@ -136,7 +140,7 @@
    echo "Removing unneeded architectures..."
    local arch
    for arch in "$builddir"/arch/*/; do
@@ -82,7 +82,7 @@ index 434cdf21..11d16580 100644
      echo "Removing $(basename "$arch")"
      rm -r "$arch"
    done
-@@ -192,7 +196,7 @@ _package-docs() {
+@@ -192,7 +196,7 @@
    ln -sr "$builddir/Documentation" "$pkgdir/usr/share/doc/$pkgbase"
  }
  
