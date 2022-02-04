@@ -20,7 +20,7 @@ Index: PKGBUILD
  
  export KBUILD_BUILD_HOST=archlinux
  export KBUILD_BUILD_USER=$pkgbase
-@@ -54,6 +56,8 @@
+@@ -54,6 +56,9 @@
    make olddefconfig
    diff -u ../config .config || :
  
@@ -30,7 +30,7 @@ Index: PKGBUILD
    make -s kernelrelease > version
    echo "Prepared $pkgbase version $(<version)"
  }
-@@ -61,7 +65,7 @@
+@@ -61,7 +66,7 @@
  build() {
    cd $_srcname
    make all
@@ -39,17 +39,17 @@ Index: PKGBUILD
  }
  
  _package() {
-@@ -87,6 +91,9 @@
+@@ -87,6 +92,9 @@
    echo "Installing modules..."
    make INSTALL_MOD_PATH="$pkgdir/usr" INSTALL_MOD_STRIP=1 modules_install
  
 +  echo "Installing dtbs..."
-+  make INSTALL_DTBS_PATH="$pkgdir/boot/dtbs/$kernver" dtbs_install
++  make INSTALL_DTBS_PATH="$pkgdir/usr/lib/firmware/$kernver/device-tree" dtbs_install
 +
    # remove build and source links
    rm "$modulesdir"/{source,build}
  }
-@@ -102,19 +109,16 @@
+@@ -102,19 +110,16 @@
    install -Dt "$builddir" -m644 .config Makefile Module.symvers System.map \
      localversion.* version vmlinux
    install -Dt "$builddir/kernel" -m644 kernel/Makefile
@@ -74,7 +74,7 @@ Index: PKGBUILD
  
    install -Dt "$builddir/drivers/md" -m644 drivers/md/*.h
    install -Dt "$builddir/net/mac80211" -m644 net/mac80211/*.h
-@@ -136,7 +140,7 @@
+@@ -136,7 +141,7 @@
    echo "Removing unneeded architectures..."
    local arch
    for arch in "$builddir"/arch/*/; do
@@ -83,7 +83,7 @@ Index: PKGBUILD
      echo "Removing $(basename "$arch")"
      rm -r "$arch"
    done
-@@ -192,7 +196,7 @@
+@@ -192,7 +197,7 @@
    ln -sr "$builddir/Documentation" "$pkgdir/usr/share/doc/$pkgbase"
  }
  
