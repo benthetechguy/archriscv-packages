@@ -25,6 +25,7 @@ Index: PKGBUILD
    diff -u ../config .config || :
  
 +  patch -Np0 < ../riscv64.config-patch
++  touch .config
 +
    make -s kernelrelease > version
    echo "Prepared $pkgbase version $(<version)"
